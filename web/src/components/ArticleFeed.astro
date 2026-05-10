@@ -1,0 +1,130 @@
+---
+/**
+ * Magazine-style “latest posts” list: date, category, title, excerpt.
+ * Content from articles.json — replace with Markdown collection or CMS later.
+ */
+import type { Article } from "../types/article";
+
+interface Props {
+  articles: Article[];
+  heading: string;
+  subheading?: string;
+}
+
+const { articles, heading, subheading } = Astro.props;
+
+function formatDate(iso: string) {
+  try {
+    return new Intl.DateTimeFormat("ta-IN", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    }).format(new Date(iso));
+  } catch {
+    return iso;
+  }
+}
+---
+
+<section class="feed" aria-labelledby="feed-title">
+  <div class="feed-head">
+    <h2 id="feed-title" class="feed-title">{heading}</h2>
+    {subheading && <p class="feed-sub">{subheading}</p>}
+  </div>
+  <ul class="feed-list">
+    {
+      articles.map((a) => (
+        <li class="feed-item" id={a.slug}>
+          <article>
+            <p class="meta">
+              <time datetime={a.date}>{formatDate(a.date)}</time>
+              <span class="sep">·</span>
+              <span class="cat">{a.category}</span>
+            </p>
+            <h3 class="item-title">
+              <a href={`${import.meta.env.BASE_URL}#${a.slug}`}>{a.title}</a>
+            </h3>
+            <p class="excerpt">{a.excerpt}</p>
+          </article>
+        </li>
+      ))
+    }
+  </ul>
+  <p class="feed-note">
+    இத் தலைப்புகள் <strong>Tripitakatamil</strong> க்கான மாதிரி உள்ளடக்கம் மட்டுமே. வேறு தளங்களின்
+    உரைகளை நகலெடுக்காமல், உங்கள் சொந்தக் கட்டுரைகளால் மாற்றவும்.
+  </p>
+</section>
+
+<style>
+  .feed {
+    margin: 2rem 0 2.5rem;
+  }
+  .feed-head {
+    border-bottom: 2px solid var(--accent, #1e3a8a);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+  .feed-title {
+    margin: 0;
+    font-size: clamp(1.35rem, 3vw, 1.65rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .feed-sub {
+    margin: 0.35rem 0 0;
+    color: var(--muted, #64748b);
+    font-size: 0.95rem;
+  }
+  .feed-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .feed-item {
+    margin: 0;
+    padding: 1.15rem 0;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .feed-item:last-child {
+    border-bottom: 0;
+  }
+  .meta {
+    margin: 0 0 0.35rem;
+    font-size: 0.875rem;
+    color: var(--muted, #64748b);
+  }
+  .sep {
+    margin: 0 0.35rem;
+  }
+  .cat {
+    color: var(--primary, #1e3a8a);
+    font-weight: 600;
+  }
+  .item-title {
+    margin: 0 0 0.5rem;
+    font-size: 1.125rem;
+    line-height: 1.35;
+    font-weight: 700;
+  }
+  .item-title a {
+    color: var(--fg, #0f172a);
+    text-decoration: none;
+  }
+  .item-title a:hover {
+    color: var(--primary, #1e3a8a);
+    text-decoration: underline;
+  }
+  .excerpt {
+    margin: 0;
+    color: #334155;
+    font-size: 0.98rem;
+    line-height: 1.6;
+  }
+  .feed-note {
+    margin: 1.5rem 0 0;
+    font-size: 0.85rem;
+    color: var(--muted, #64748b);
+    line-height: 1.5;
+  }
+</style>

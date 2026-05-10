@@ -1,23 +1,87 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import YouTube from "../components/YouTube.astro";
+import ArticleFeed from "../components/ArticleFeed.astro";
 import featured from "../data/featured-video.json";
+import articles from "../data/articles.json";
+import type { Article } from "../types/article";
+
+const list = articles as Article[];
 ---
 
-<Layout title="Tripitakatamil">
-  <h1>அண்மைப் படைப்புகள்</h1>
-  <p class="lede">Recent writing — swap the video below by editing one JSON file in the repo.</p>
+<Layout
+  title="Tripitakatamil — தமிழ் இதழ்"
+  description="Tripitakatamil — Tamil publication: articles and weekly video."
+>
+  <header class="masthead">
+    <p class="masthead-tag">தமிழ் இதழ் · Tamil publication</p>
+    <h1 class="masthead-title">Tripitakatamil</h1>
+    <p class="masthead-lede">
+      கட்டுரை, ஆய்வு, காணொளி — ஒரே தளத்தில். பிராண்ட் <strong>Tripitakatamil</strong>; உள்ளடக்கம்
+      உங்கள் சொந்த எழுத்து (வேறு தள உரைகளை நகலெடுக்க வேண்டாம்).
+    </p>
+  </header>
 
-  <section aria-labelledby="feat-heading">
-    <h2 id="feat-heading">{featured.title}</h2>
+  <ArticleFeed
+    articles={list}
+    heading="அண்மைப் படைப்புகள்"
+    subheading="Latest — edit `web/src/data/articles.json` or add Markdown posts later."
+  />
+
+  <section class="video-block" aria-labelledby="feat-heading">
+    <h2 id="feat-heading" class="section-title">{featured.title}</h2>
     <YouTube url={featured.youtubeUrl} title={featured.title} />
     <p class="caption">{featured.caption}</p>
-  </section>
-
-  <section aria-labelledby="posts-heading">
-    <h2 id="posts-heading">Posts</h2>
-    <p class="lede">
-      Add Markdown posts under <code>web/src/content/posts/</code> later, or keep using this single-page site until you expand the content model.
+    <p class="video-hint">
+      Weekly swap: edit <code>web/src/data/featured-video.json</code> in the repo and push.
     </p>
   </section>
 </Layout>
+
+<style>
+  .masthead {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .masthead-tag {
+    margin: 0 0 0.35rem;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted, #64748b);
+  }
+  .masthead-title {
+    margin: 0 0 0.5rem;
+    font-size: clamp(2rem, 5vw, 2.65rem);
+    line-height: 1.15;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+  .masthead-lede {
+    margin: 0;
+    font-size: 1.05rem;
+    color: #334155;
+    max-width: 38em;
+  }
+  .video-block {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e2e8f0;
+  }
+  .section-title {
+    margin: 0 0 1rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+  .caption {
+    margin: 0.75rem 0 0;
+    color: var(--muted, #64748b);
+    font-size: 0.95rem;
+  }
+  .video-hint {
+    margin: 0.75rem 0 0;
+    font-size: 0.85rem;
+    color: var(--muted, #64748b);
+  }
+</style>
