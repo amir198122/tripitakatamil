@@ -365,8 +365,22 @@ const items = navData as NavItem[];
     z-index: 90;
     box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
     overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: #c4c4c4 transparent;
     display: flex;
     flex-direction: column;
+  }
+
+  .site-nav-drawer::-webkit-scrollbar {
+    width: 6px;
+  }
+  .site-nav-drawer::-webkit-scrollbar-thumb {
+    background: #c4c4c4;
+    border-radius: 4px;
+  }
+  .site-nav-drawer::-webkit-scrollbar-track {
+    background: transparent;
   }
   .site-nav-drawer__head {
     display: flex;

@@ -64,7 +64,15 @@ const totalPages = getTotalPages(list.length);
           </p>
           <form class="search-form" role="search" action={`${base}`} method="get">
             <span class="search-label">தேடல்</span>
-            <input type="search" name="q" class="search-input" placeholder="தேடல் (உருவாக்கத்தில்)" autocomplete="off" />
+            <input
+              type="text"
+              name="q"
+              class="search-input"
+              placeholder="தேடல் (உருவாக்கத்தில்)"
+              autocomplete="off"
+              inputmode="search"
+              aria-label="தேடல்"
+            />
             <button type="button" class="search-btn" disabled title="Static site — wire to search later">தேடு</button>
           </form>
         </div>
@@ -168,11 +176,13 @@ const totalPages = getTotalPages(list.length);
     background: var(--kt-page-bg);
     color: var(--kt-text);
     line-height: 1.65;
+    overflow-x: hidden;
   }
 
   body {
     margin: 0;
     min-height: 100vh;
+    overflow-x: hidden;
   }
 
   .body-panel {
@@ -180,6 +190,7 @@ const totalPages = getTotalPages(list.length);
     display: flex;
     flex-direction: column;
     background: var(--kt-page-bg);
+    overflow-x: hidden;
   }
 
   .skip {
@@ -284,11 +295,14 @@ const totalPages = getTotalPages(list.length);
     align-items: center;
     justify-content: space-between;
     gap: 0.65rem 1.25rem;
+    overflow-x: hidden;
+    width: 100%;
+    box-sizing: border-box;
   }
   .ticker-line {
     margin: 0;
-    flex: 1;
-    min-width: min(100%, 14rem);
+    flex: 1 1 12rem;
+    min-width: 0;
     font-size: 0.88rem;
     font-weight: 600;
     color: #252422;
@@ -296,6 +310,8 @@ const totalPages = getTotalPages(list.length);
     display: flex;
     align-items: flex-start;
     gap: 0.5rem;
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
   .ticker-dot {
     flex-shrink: 0;
@@ -323,11 +339,15 @@ const totalPages = getTotalPages(list.length);
   }
   .search-input {
     flex: 1;
-    min-width: 8rem;
+    min-width: 0;
+    max-width: 100%;
     border: 1px solid #9a9a9a;
     padding: 0.4rem 0.55rem;
     font: inherit;
     background: #fff;
+    appearance: none;
+    -webkit-appearance: none;
+    border-radius: 2px;
   }
   .search-btn {
     background: var(--kt-primary);
