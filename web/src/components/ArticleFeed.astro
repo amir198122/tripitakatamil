@@ -35,7 +35,7 @@ function formatDate(iso: string) {
   <ul class="feed-list">
     {
       articles.map((a) => (
-        <li class="feed-item" id={a.slug}>
+        <li class="feed-item">
           <article>
             <p class="meta">
               <time datetime={a.date}>{formatDate(a.date)}</time>
@@ -43,7 +43,7 @@ function formatDate(iso: string) {
               <span class="cat">{a.category}</span>
             </p>
             <h3 class="item-title">
-              <a href={`${import.meta.env.BASE_URL}#${a.slug}`}>{a.title}</a>
+              <a href={`${import.meta.env.BASE_URL}posts/${a.slug}/`}>{a.title}</a>
             </h3>
             <p class="excerpt">{a.excerpt}</p>
           </article>

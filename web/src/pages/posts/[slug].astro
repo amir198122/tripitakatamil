@@ -1,0 +1,185 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import articles from "../../data/articles.json";
+import type { Article } from "../../types/article";
+import { sortArticlesDesc } from "../../lib/pagination";
+import { renderMarkdown } from "../../lib/markdown";
+
+export function getStaticPaths() {
+  return (articles as Article[]).map((a) => ({
+    params: { slug: a.slug },
+  }));
+}
+
+const base = import.meta.env.BASE_URL;
+const sorted = sortArticlesDesc(articles as Article[]);
+const { slug } = Astro.params;
+const article = sorted.find((a) => a.slug === slug);
+
+if (!article) {
+  return Astro.redirect(base);
+}
+
+const idx = sorted.findIndex((a) => a.slug === slug);
+const prev = idx < sorted.length - 1 ? sorted[idx + 1] : null;
+const next = idx > 0 ? sorted[idx - 1] : null;
+
+const defaultMd = `## ${article.title}\n\n${article.excerpt}\n\n---\n\n*முழுக் கட்டுரை: \`articles.json\` இல் இப் பதிவுக்கு \`bodyMd\` புலத்தைச் சேர்க்கவும் (Markdown).*`;
+const html = renderMarkdown(article.bodyMd ?? defaultMd);
+
+function formatDate(iso: string) {
+  try {
+    return new Intl.DateTimeFormat("ta-IN", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }).format(new Date(iso));
+  } catch {
+    return iso;
+  }
+}
+---
+
+<Layout title={`${article.title} — Tripitakatamil`} description={article.excerpt} noSidebar>
+  <Breadcrumbs
+    items={[
+      { label: "முகப்பு", href: base },
+      { label: "அண்மைப் படைப்புகள்", href: base },
+      { label: article.title },
+    ]}
+  />
+
+  <article class="post">
+    <header class="post__head">
+      <p class="post__meta">
+        <time datetime={article.date}>{formatDate(article.date)}</time>
+        <span class="post__sep">·</span>
+        <span class="post__cat">{article.category}</span>
+      </p>
+      <h1 class="post__title">{article.title}</h1>
+    </header>
+    <div class="post__body article-prose" set:html={html} />
+    <nav class="post__pager" aria-label="அடுத்து முந்தைய பதிவுகள்">
+      {
+        prev ? (
+          <a class="post__pager-link post__pager-link--prev" href={`${base}posts/${prev.slug}/`}>
+            « {prev.title}
+          </a>
+        ) : (
+          <span class="post__pager-spacer" />
+        )
+      }
+      {
+        next ? (
+          <a class="post__pager-link post__pager-link--next" href={`${base}posts/${next.slug}/`}>
+            {next.title} »
+          </a>
+        ) : (
+          <span class="post__pager-spacer" />
+        )
+      }
+    </nav>
+    <p class="post__back">
+      <a href={base}>← முகப்புக்கு</a>
+      ·
+      <a href={base}>அண்மைப் பட்டியல்</a>
+    </p>
+  </article>
+</Layout>
+
+<style>
+  .post {
+    max-width: 40rem;
+    margin: 0 auto;
+  }
+  .post__head {
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #0582ca;
+  }
+  .post__meta {
+    margin: 0 0 0.5rem;
+    font-size: 0.9rem;
+    color: #5a5a5a;
+  }
+  .post__sep {
+    margin: 0 0.35rem;
+  }
+  .post__cat {
+    color: #005e94;
+    font-weight: 600;
+  }
+  .post__title {
+    margin: 0;
+    font-family: Oswald, "Noto Sans Tamil", sans-serif;
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-weight: 600;
+    color: #252422;
+    line-height: 1.2;
+  }
+  .article-prose {
+    font-size: 1.02rem;
+    line-height: 1.75;
+    color: #222;
+  }
+  .article-prose :global(h2) {
+    font-family: Oswald, "Noto Sans Tamil", sans-serif;
+    font-size: 1.35rem;
+    margin: 1.5rem 0 0.75rem;
+    color: #252422;
+  }
+  .article-prose :global(p) {
+    margin: 0 0 1rem;
+  }
+  .article-prose :global(hr) {
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 1.25rem 0;
+  }
+  .article-prose :global(ul),
+  .article-prose :global(ol) {
+    margin: 0 0 1rem 1.25rem;
+    padding: 0;
+  }
+  .article-prose :global(a) {
+    color: #0582ca;
+  }
+  .post__pager {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 2rem 0 0;
+    padding-top: 1.25rem;
+    border-top: 1px solid #e5e5e5;
+  }
+  .post__pager-link {
+    font-size: 0.92rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: #0582ca !important;
+    line-height: 1.35;
+  }
+  .post__pager-link:hover {
+    text-decoration: underline !important;
+    color: #7a7a7a !important;
+  }
+  .post__pager-link--next {
+    text-align: right;
+  }
+  .post__pager-spacer {
+    min-height: 1px;
+  }
+  .post__back {
+    margin: 1rem 0 0;
+    font-size: 0.9rem;
+    color: #666;
+  }
+  .post__back a {
+    color: #0582ca !important;
+    text-decoration: none;
+  }
+  .post__back a:hover {
+    text-decoration: underline !important;
+  }
+</style>

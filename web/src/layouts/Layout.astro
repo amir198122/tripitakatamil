@@ -71,7 +71,7 @@ const totalPages = getTotalPages(list.length);
                 <ul class="module-list">
                   {sidebarLinks.map((a) => (
                     <li>
-                      <a href={`${base}#${a.slug}`}>{a.title}</a>
+                      <a href={`${base}posts/${a.slug}/`}>{a.title}</a>
                     </li>
                   ))}
                 </ul>
@@ -112,7 +112,7 @@ const totalPages = getTotalPages(list.length);
             <h4 class="footer-heading">விரைவு இணைப்புகள்</h4>
             <ul class="footer-links">
               <li><a href={`${base}`}>முகப்பு</a></li>
-              <li><a href={`${base}#feed-title`}>அண்மைப் படைப்புகள்</a></li>
+              <li><a href={`${base}`}>அண்மைப் படைப்புகள்</a></li>
               <li><a href={`${base}about/`}>About</a></li>
             </ul>
           </div>
