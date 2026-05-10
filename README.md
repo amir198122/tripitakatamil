@@ -1,6 +1,6 @@
 # Tripitakatamil web project
 
-This repository includes a **deployable WordPress block theme** in [`wp-theme/tripitakatamil`](wp-theme/tripitakatamil) (ZIP install on self-hosted or WordPress.com **Business+**), an **Astro static site** in [`web/`](web/) with **GitHub Actions → GitHub Pages** (free hosting + auto-deploy on push to `main`), plus planning docs, Markdown content, and API helper scripts.
+This repository includes a **deployable WordPress block theme** in [`wp-theme/tripitakatamil`](wp-theme/tripitakatamil) (ZIP install on self-hosted or WordPress.com **Business+**), an **Astro static site** in [`web/`](web/) deployed to **GitHub Pages** via CI (**`gh-pages` branch** — see [docs/10-github-pages-actions.md](docs/10-github-pages-actions.md)), plus planning docs, Markdown content, and API helper scripts.
 
 **Budget:** Tripitakatamil chose the **very tight budget** path. Start with [docs/02-domain-and-hosting-checklist.md](docs/02-domain-and-hosting-checklist.md#budget-path) (WordPress.com vs cheap self-hosted), then align [docs/03-developer-brief.md](docs/03-developer-brief.md) and [docs/04-feature-list-and-certain-changes.md](docs/04-feature-list-and-certain-changes.md) with that choice.
 
@@ -20,12 +20,12 @@ This repository includes a **deployable WordPress block theme** in [`wp-theme/tr
 | [wp-theme/](wp-theme/) | **Installable block theme** — see [wp-theme/README.md](wp-theme/README.md) |
 | [content/](content/) | Draft page copy and snippets for WordPress |
 | [content/guides/weekly-youtube-updates.md](content/guides/weekly-youtube-updates.md) | How editors embed YouTube and refresh weekly |
-| [docs/10-github-pages-actions.md](docs/10-github-pages-actions.md) | **Free** GitHub Pages + Actions: auto-deploy on push, custom `.com` later |
-| [web/](web/) | **Astro static site** — free preview via `npm run dev`; production via CI |
+| [docs/10-github-pages-actions.md](docs/10-github-pages-actions.md) | **Free** GitHub Pages via **`gh-pages` branch** + Actions; custom `.com` later |
+| [web/](web/) | **Astro static site** — `npm run dev` locally; CI publishes to `gh-pages` |
 
 ## Next steps for you
 
-1. **Free public site (recommended for zero cost):** enable [GitHub Pages with Actions](docs/10-github-pages-actions.md), then push `main` — live URL `https://amir198122.github.io/tripitakatamil/`. Change the weekly YouTube URL in [`web/src/data/featured-video.json`](web/src/data/featured-video.json).
+1. **Free public site:** in **Settings → Pages**, set **Deploy from a branch** → **`gh-pages`** → **`/ (root)`**, then push `main` (or wait for CI). Live URL: `https://amir198122.github.io/tripitakatamil/`. Details: [docs/10-github-pages-actions.md](docs/10-github-pages-actions.md). Change the weekly YouTube URL in [`web/src/data/featured-video.json`](web/src/data/featured-video.json).
 2. **Optional WordPress theme:** follow [wp-theme/README.md](wp-theme/README.md) (ZIP). On WordPress.com **Free**, use **self-hosted** or **Business** to upload.
 3. Replace placeholder Tamil and English copy in `content/` with your final text.
 4. Complete the checklists in `docs/02` and `docs/04` with your real domain and priorities.

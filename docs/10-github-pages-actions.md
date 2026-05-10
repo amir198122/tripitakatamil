@@ -1,31 +1,30 @@
 # GitHub Pages + Actions (free hosting & auto-deploy)
 
-This repo builds the **Astro** site in [`web/`](../web/) and deploys the `dist/` output to **GitHub Pages** whenever you push to **`main`**.
+This repo builds the **Astro** site in [`web/`](../web/) on every push to **`main`** and publishes the static output to the **`gh-pages`** branch using [peaceiris/actions-gh-pages](https://github.com/peaceiris/actions-gh-pages). **GitHub Pages** then serves those files.
 
-## One-time GitHub setup (required — deploy fails without this)
+## One-time GitHub setup (required)
 
-1. Open the repo on GitHub → **Settings** → **Pages**.
-2. Under **Build and deployment** → **Source**, choose **GitHub Actions** (not “Deploy from a branch”).
-3. Save, then re-run the workflow (**Actions** → failed run → **Re-run all jobs**) or push an empty commit.
+1. Open the repo → **Settings** → **Pages**.
+2. Under **Build and deployment** → **Source**, choose **Deploy from a branch** (not “GitHub Actions” for this workflow).
+3. Set **Branch** to **`gh-pages`** and folder **`/ (root)`**, then Save.
+4. Push to **`main`** (or re-run the workflow). After the first green run, wait ~1 minute and open:
 
-If **Source** is left on “Deploy from a branch”, the **Deploy to GitHub Pages** step fails because GitHub is not expecting an Actions-produced artifact.
+   `https://amir198122.github.io/tripitakatamil/`
 
-### First run: `github-pages` environment
+   (Project site = `https://<user>.github.io/<repo>/` — matches [`web/astro.config.mjs`](../web/astro.config.mjs) `site` + `base`.)
 
-The workflow uses the **`github-pages`** environment. If GitHub shows a **pending approval** for that environment, open the run in the Actions tab and **approve** it once.
+### Why we use the `gh-pages` branch
 
-### After the first successful deploy
+An earlier workflow used GitHub’s **`deploy-pages`** action. That only works if Pages **Source** is set to **GitHub Actions**. On a fresh repo that is often still unset, so the deploy step fails even when the build is green. **Publishing to `gh-pages`** avoids that toggle and is the most reliable default for new repositories.
 
-When the workflow finishes green, **Settings → Pages** shows the live URL, typically:
+### Workflow token permissions
 
-`https://amir198122.github.io/tripitakatamil/`
-
-(Project site = `https://<user>.github.io/<repo>/` — matches [`web/astro.config.mjs`](../web/astro.config.mjs) `site` + `base`.)
+If the workflow fails at **Publish to gh-pages** with permission errors, open **Settings → Actions → General → Workflow permissions** and set **Read and write permissions** for the `GITHUB_TOKEN` (needed to push the `gh-pages` branch).
 
 ## Automatic deploys
 
-- **Push to `main`** → **Deploy Astro site to GitHub Pages** workflow runs → site updates (usually 1–3 minutes).
-- **Pull requests** → **Verify Astro build** runs `npm run build` only (no deploy), so broken builds do not reach `main`.
+- **Push to `main`** → workflow runs → `gh-pages` is updated → Pages refreshes.
+- **Pull requests** → [`.github/workflows/verify-pr.yml`](../.github/workflows/verify-pr.yml) runs `npm run build` only (no deploy).
 
 ## Change YouTube without touching layout
 
@@ -40,6 +39,5 @@ Edit [`web/src/data/featured-video.json`](../web/src/data/featured-video.json), 
 ## Troubleshooting
 
 - **Workflow not listed:** ensure YAML is under `.github/workflows/` on the default branch.
-- **Deploy step fails while build is green:** almost always **Pages → Source** is not set to **GitHub Actions** (see top of this doc). Rarely: org policy blocks `GITHUB_TOKEN` **pages** scope — check **Settings → Actions → General → Workflow permissions**.
-- **403 / Pages write:** re-check **Settings → Actions → General** → *Workflow permissions* → “Read and write” if your org policy blocks uploads.
+- **Pages 404:** confirm **Pages** is set to branch **`gh-pages`** / **root**, and the workflow has run at least once on `main`.
 - **Blank CSS or broken links locally:** run `npm run dev` from `web/` — dev server uses the same `base` as production.
