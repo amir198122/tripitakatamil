@@ -1,11 +1,6 @@
-export interface NavChild {
+/** One row in the horizontal nav (no nested children — flat bar + dots). */
+export interface NavLink {
   label: string;
-  /** Site-relative: `""`, `about/`, `page/2/`, `#anchor` */
+  /** Site-relative: `""`, `about/`, `posts/slug/`, `page/2/`, `#anchor` */
   path: string;
-}
-
-export interface NavItem {
-  label: string;
-  path: string;
-  children?: NavChild[];
 }

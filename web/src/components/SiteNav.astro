@@ -1,10 +1,10 @@
 ---
 import navData from "../data/navigation.json";
-import type { NavItem } from "../types/navigation";
+import type { NavLink } from "../types/navigation";
 import { withBase } from "../lib/nav-url";
 
 const base = import.meta.env.BASE_URL;
-const items = navData as NavItem[];
+const links = navData as NavLink[];
 ---
 
 <div class="site-nav-wrap">
@@ -22,42 +22,13 @@ const items = navData as NavItem[];
   </button>
 
   <nav class="site-nav site-nav--desktop" aria-label="Primary" data-site-nav-desktop>
-    <ul class="site-nav__root">
+    <ul class="site-nav__root site-nav__root--flat">
       {
-        items.map((item) => (
-          <li
-            class:list={[
-              "site-nav__item",
-              item.children?.length ? "site-nav__item--has-sub" : "",
-            ]}
-            data-nav-item
-          >
-            <span class="site-nav__row">
-              <a class="site-nav__link" href={withBase(base, item.path)}>
-                {item.label}
-              </a>
-              {item.children?.length ? (
-                <button
-                  type="button"
-                  class="site-nav__caret"
-                  aria-expanded="false"
-                  aria-haspopup="true"
-                  aria-label={`${item.label} — உட்பிரிவுகள்`}
-                  data-nav-caret
-                >
-                  <span aria-hidden="true">▾</span>
-                </button>
-              ) : null}
-            </span>
-            {item.children?.length ? (
-              <ul class="site-nav__sub" role="list">
-                {item.children.map((ch) => (
-                  <li>
-                    <a href={withBase(base, ch.path)}>{ch.label}</a>
-                  </li>
-                ))}
-              </ul>
-            ) : null}
+        links.map((item) => (
+          <li class="site-nav__flat-item">
+            <a class="site-nav__link site-nav__link--flat" href={withBase(base, item.path)}>
+              {item.label}
+            </a>
           </li>
         ))
       }
@@ -74,34 +45,12 @@ const items = navData as NavItem[];
     </div>
     <nav aria-label="Mobile primary">
       <ul class="site-nav-mobile">
-        <li class="site-nav-mobile__item">
-          <a class="site-nav-mobile__solo" href={withBase(base, "")}>முகப்பு</a>
-        </li>
         {
-          items.map((item) => (
+          links.map((item) => (
             <li class="site-nav-mobile__item">
-              {item.children?.length ? (
-                <details class="site-nav-mobile__details">
-                  <summary class="site-nav-mobile__summary">
-                    <span>{item.label}</span>
-                    <span class="site-nav-mobile__chev" aria-hidden="true"></span>
-                  </summary>
-                  <ul class="site-nav-mobile__sub">
-                    <li>
-                      <a href={withBase(base, item.path)}>பிரிவு முகப்பு</a>
-                    </li>
-                    {item.children.map((ch) => (
-                      <li>
-                        <a href={withBase(base, ch.path)}>{ch.label}</a>
-                      </li>
-                    ))}
-                  </ul>
-                </details>
-              ) : (
-                <a class="site-nav-mobile__solo" href={withBase(base, item.path)}>
-                  {item.label}
-                </a>
-              )}
+              <a class="site-nav-mobile__solo" href={withBase(base, item.path)}>
+                {item.label}
+              </a>
             </li>
           ))
         }
@@ -144,27 +93,6 @@ const items = navData as NavItem[];
     document.querySelectorAll("[data-nav-drawer] a").forEach((a) => {
       a.addEventListener("click", () => closeDrawer());
     });
-
-    document.querySelectorAll("[data-nav-caret]").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const li = btn.closest("[data-nav-item]");
-        if (!li) return;
-        const open = li.classList.toggle("is-open");
-        btn.setAttribute("aria-expanded", open ? "true" : "false");
-      });
-    });
-
-    document.addEventListener("click", (e) => {
-      const t = e.target;
-      if (!(t instanceof Element)) return;
-      if (t.closest("[data-nav-item]") || t.closest("[data-nav-caret]")) return;
-      document.querySelectorAll("[data-nav-item].is-open").forEach((li) => {
-        li.classList.remove("is-open");
-        li.querySelector("[data-nav-caret]")?.setAttribute("aria-expanded", "false");
-      });
-    });
   })();
 </script>
 
@@ -198,7 +126,7 @@ const items = navData as NavItem[];
   .site-nav-burger__bar {
     display: block;
     height: 2px;
-    background: var(--kt-nav, #0a1a0f);
+    background: #1a1a1a;
     border-radius: 1px;
   }
 
@@ -206,118 +134,58 @@ const items = navData as NavItem[];
     flex: 1;
     min-width: 0;
     font-family: "Noto Sans Tamil", "Open Sans", sans-serif;
-    font-size: 1rem;
+    font-size: 0.98rem;
     font-weight: 600;
     align-self: stretch;
     display: flex;
-    align-items: stretch;
+    align-items: center;
   }
-  .site-nav__root {
+
+  .site-nav__root--flat {
     display: flex;
     flex-wrap: nowrap;
-    align-items: stretch;
-    gap: 0;
+    align-items: center;
     list-style: none;
     margin: 0;
-    padding: 0;
+    padding: 0 0.25rem 0 0;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: thin;
+    gap: 0;
   }
-  .site-nav__item {
-    position: relative;
-    margin: 0;
-    flex-shrink: 0;
-    border-right: 1px solid #e8e8e8;
-  }
-  .site-nav__item:last-child {
-    border-right: 0;
-  }
-  .site-nav__item:hover,
-  .site-nav__item:focus-within {
-    background: #efefef;
-  }
-  .site-nav__row {
-    display: flex;
-    align-items: center;
-    gap: 0.05rem;
-    height: 100%;
-    min-height: 2.85rem;
-    padding: 0 0.15rem 0 0.25rem;
-  }
-  .site-nav__link {
+
+  .site-nav__flat-item {
     display: inline-flex;
     align-items: center;
-    padding: 0.5rem 0.35rem 0.5rem 0.65rem;
+    flex-shrink: 0;
+    margin: 0;
+  }
+
+  .site-nav__root--flat > .site-nav__flat-item + .site-nav__flat-item::before {
+    content: "";
+    display: block;
+    width: 5px;
+    height: 5px;
+    margin: 0 0.65rem;
+    background: #0582ca;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .site-nav__link--flat {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.65rem 0.2rem;
     color: #1a1a1a !important;
     text-decoration: none !important;
     white-space: nowrap;
     letter-spacing: 0.01em;
+    border-radius: 2px;
   }
-  .site-nav__link:hover {
+  .site-nav__link--flat:hover,
+  .site-nav__link--flat:focus-visible {
     color: #0582ca !important;
-  }
-  .site-nav__caret {
-    border: 0;
-    background: transparent;
-    color: #333;
-    padding: 0.35rem 0.45rem 0.35rem 0.1rem;
-    cursor: pointer;
-    line-height: 1;
-    font-size: 0.55rem;
-    align-self: center;
-  }
-  .site-nav__caret:hover,
-  .site-nav__caret:focus-visible {
-    color: #0582ca;
     outline: none;
-  }
-
-  .site-nav__sub {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    min-width: 15.5rem;
-    margin: 0;
-    padding: 0.4rem 0;
-    list-style: none;
-    background: #f5f5f5;
-    border: 1px solid #4a4a4a;
-    box-shadow: 2px 6px 16px rgba(0, 0, 0, 0.18);
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-2px);
-    transition:
-      opacity 0.12s ease,
-      transform 0.12s ease,
-      visibility 0.12s;
-    z-index: 120;
-  }
-  .site-nav__sub a {
-    display: block;
-    padding: 0.5rem 1rem;
-    color: #111 !important;
-    text-decoration: none !important;
-    font-family: "Noto Sans Tamil", "Open Sans", sans-serif;
-    font-size: 0.92rem;
-    font-weight: 500;
-    white-space: nowrap;
-    border-bottom: 1px solid #e0e0e0;
-  }
-  .site-nav__sub li:last-child a {
-    border-bottom: 0;
-  }
-  .site-nav__sub a:hover {
-    background: #e8e8e8;
-    color: #0582ca !important;
-  }
-
-  .site-nav__item--has-sub:hover .site-nav__sub,
-  .site-nav__item--has-sub:focus-within .site-nav__sub,
-  .site-nav__item--has-sub.is-open .site-nav__sub {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
   }
 
   .site-nav-backdrop {
@@ -376,44 +244,10 @@ const items = navData as NavItem[];
     color: #0582ca !important;
     text-decoration: none !important;
     font-weight: 600;
+    font-size: 0.95rem;
   }
-  .site-nav-mobile__details {
-    border: 0;
-  }
-  .site-nav-mobile__summary {
-    list-style: none;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.65rem 1rem;
-    cursor: pointer;
-    font-weight: 600;
-  }
-  .site-nav-mobile__summary::-webkit-details-marker {
-    display: none;
-  }
-  .site-nav-mobile__summary a {
-    color: #0582ca !important;
-    text-decoration: none !important;
-    flex: 1;
-  }
-  .site-nav-mobile__chev::before {
-    content: "▾";
-    color: #666;
-    font-size: 0.75rem;
-  }
-  .site-nav-mobile__sub {
-    list-style: none;
-    margin: 0;
-    padding: 0 0 0.5rem 0.5rem;
-    background: #fafafa;
-  }
-  .site-nav-mobile__sub a {
-    display: block;
-    padding: 0.5rem 0.75rem;
-    color: #333 !important;
-    text-decoration: none !important;
-    font-size: 0.92rem;
+  .site-nav-mobile__solo:hover {
+    background: #f8fafc;
   }
 
   @media (max-width: 767px) {
