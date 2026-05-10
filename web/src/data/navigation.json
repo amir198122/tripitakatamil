@@ -1,39 +1,54 @@
 [
   {
-    "label": "முகப்பு",
-    "path": ""
-  },
-  {
-    "label": "அண்மை",
-    "path": "",
+    "label": "இலக்கியம்",
+    "path": "posts/sample-07/",
     "children": [
-      { "label": "பட்டியல் (முகப்பு)", "path": "" },
-      { "label": "பக்கம் 2", "path": "page/2/" },
-      { "label": "பக்கம் 3", "path": "page/3/" },
-      { "label": "காணொளி (முகப்பு)", "path": "#feat-heading" }
+      { "label": "கட்டுரைகள்", "path": "posts/sample-07/" },
+      { "label": "கவிதைகள்", "path": "posts/sample-10/" },
+      { "label": "சிறுகதைகள்", "path": "posts/letters/" },
+      { "label": "விமர்சனங்கள்", "path": "posts/weekly-reading/" },
+      { "label": "நிகழ்வுகள்", "path": "posts/sample-11/" },
+      { "label": "காணொளிகள்", "path": "posts/sample-09/" },
+      { "label": "நேர்காணல்கள்", "path": "posts/tamil-web-fonts/" },
+      { "label": "மின்னூல்கள்", "path": "posts/archive-pdfs/" }
     ]
   },
   {
-    "label": "பிரிவுகள்",
-    "path": "",
-    "children": [
-      { "label": "அறிவிப்பு", "path": "posts/vanakkam-tripitakatamil/" },
-      { "label": "தொழில்நுட்பக் குறிப்பு", "path": "posts/tamil-web-fonts/" },
-      { "label": "புத்தக முன்னுரை", "path": "posts/weekly-reading/" },
-      { "label": "வெளியீடு", "path": "posts/archive-pdfs/" },
-      { "label": "கடிதம்", "path": "posts/letters/" }
-    ]
-  },
-  {
-    "label": "இதழ்",
+    "label": "சிற்றிதழ்கள்",
     "path": "page/2/",
     "children": [
-      { "label": "பக்கம் 2", "path": "page/2/" },
-      { "label": "பக்கம் 3", "path": "page/3/" }
+      { "label": "இதழ் — பக்கம் 2", "path": "page/2/" },
+      { "label": "இதழ் — பக்கம் 3", "path": "page/3/" },
+      { "label": "ஆசிரியர் குறிப்பு", "path": "posts/editor-note/" },
+      { "label": "வணக்கம்", "path": "posts/vanakkam-tripitakatamil/" }
     ]
   },
   {
-    "label": "About",
-    "path": "about/"
+    "label": "திசைகாட்டிகள்",
+    "path": "posts/tamil-web-fonts/",
+    "children": [
+      { "label": "தொழில்நுட்பக் குறிப்பு", "path": "posts/tamil-web-fonts/" },
+      { "label": "படிப்பறை ஒழுங்கு", "path": "posts/sample-08/" },
+      { "label": "பயணக் குறிப்பு", "path": "posts/sample-11/" }
+    ]
+  },
+  {
+    "label": "அறிவுலகு",
+    "path": "posts/weekly-reading/",
+    "children": [
+      { "label": "புத்தக முன்னுரை", "path": "posts/weekly-reading/" },
+      { "label": "அறிவிப்பு", "path": "posts/vanakkam-tripitakatamil/" },
+      { "label": "நூலகப் பட்டியல்", "path": "posts/sample-12/" }
+    ]
+  },
+  {
+    "label": "வானவில்",
+    "path": "",
+    "children": [
+      { "label": "காணொளி (முகப்பு)", "path": "#feat-heading" },
+      { "label": "ஒலி நேர்காணல்", "path": "posts/sample-09/" },
+      { "label": "சொற்பொழிவு சுருக்கம்", "path": "posts/sample-10/" },
+      { "label": "About", "path": "about/" }
+    ]
   }
 ]
