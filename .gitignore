@@ -1,0 +1,11 @@
+# Secrets — never commit (includes parent .env patterns)
+.env
+**/.env
+.env.local
+.env.*.local
+
+# OS / editor
+Thumbs.db
+.DS_Store
+.idea/
+.vscode/
