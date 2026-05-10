@@ -1,0 +1,23 @@
+---
+import Layout from "../layouts/Layout.astro";
+import YouTube from "../components/YouTube.astro";
+import featured from "../data/featured-video.json";
+---
+
+<Layout title="Tripitakatamil">
+  <h1>அண்மைப் படைப்புகள்</h1>
+  <p class="lede">Recent writing — swap the video below by editing one JSON file in the repo.</p>
+
+  <section aria-labelledby="feat-heading">
+    <h2 id="feat-heading">{featured.title}</h2>
+    <YouTube url={featured.youtubeUrl} title={featured.title} />
+    <p class="caption">{featured.caption}</p>
+  </section>
+
+  <section aria-labelledby="posts-heading">
+    <h2 id="posts-heading">Posts</h2>
+    <p class="lede">
+      Add Markdown posts under <code>web/src/content/posts/</code> later, or keep using this single-page site until you expand the content model.
+    </p>
+  </section>
+</Layout>
