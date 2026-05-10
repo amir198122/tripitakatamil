@@ -1,0 +1,38 @@
+[
+  {
+    "label": "முகப்பு",
+    "path": ""
+  },
+  {
+    "label": "அண்மை",
+    "path": "#feed-title",
+    "children": [
+      { "label": "பட்டியல் தொடக்கம்", "path": "#feed-title" },
+      { "label": "காணொளி பகுதி", "path": "#feat-heading" },
+      { "label": "பக்கம் 2 (பகிர்வு)", "path": "page/2/" }
+    ]
+  },
+  {
+    "label": "பிரிவுகள்",
+    "path": "#feed-title",
+    "children": [
+      { "label": "அறிவிப்பு", "path": "#vanakkam-tripitakatamil" },
+      { "label": "தொழில்நுட்பக் குறிப்பு", "path": "#tamil-web-fonts" },
+      { "label": "புத்தக முன்னுரை", "path": "#weekly-reading" },
+      { "label": "வெளியீடு", "path": "#archive-pdfs" },
+      { "label": "கடிதம்", "path": "#letters" }
+    ]
+  },
+  {
+    "label": "இதழ்",
+    "path": "page/2/",
+    "children": [
+      { "label": "அனைத்துப் பக்கங்கள்", "path": "page/2/" },
+      { "label": "பக்கம் 3", "path": "page/3/" }
+    ]
+  },
+  {
+    "label": "About",
+    "path": "about/"
+  }
+]

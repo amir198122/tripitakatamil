@@ -1,0 +1,129 @@
+---
+const base = import.meta.env.BASE_URL;
+
+interface Props {
+  currentPage: number;
+  totalPages: number;
+}
+
+const { currentPage, totalPages } = Astro.props;
+
+function pageHref(n: number): string {
+  if (n <= 1) return base;
+  return `${base}page/${n}/`;
+}
+
+const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+---
+
+{
+  totalPages > 1 && (
+    <nav class="pagination" aria-label="பக்க வழிசெலுத்தல்">
+      {currentPage > 1 ? (
+        <a href={pageHref(currentPage - 1)} class="pagination__nav">
+          « முந்தைய
+        </a>
+      ) : (
+        <span class="pagination__nav pagination__nav--disabled">« முந்தைய</span>
+      )}
+      <ul class="pagination__pages">
+        {pages.map((n) => (
+          <li>
+            {n === currentPage ? (
+              <span class="pagination__current" aria-current="page">
+                {n}
+              </span>
+            ) : (
+              <a class="pagination__num" href={pageHref(n)}>
+                {n}
+              </a>
+            )}
+          </li>
+        ))}
+      </ul>
+      {currentPage < totalPages ? (
+        <a href={pageHref(currentPage + 1)} class="pagination__nav">
+          அடுத்து »
+        </a>
+      ) : (
+        <span class="pagination__nav pagination__nav--disabled">அடுத்து »</span>
+      )}
+    </nav>
+  )
+}
+
+<style>
+  .pagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem 1rem;
+    margin: 1.75rem 0 0;
+    padding: 1rem 0;
+    border-top: 1px solid #e5e5e5;
+  }
+  .pagination__nav {
+    font-family: Oswald, "Noto Sans Tamil", sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #0582ca !important;
+    text-decoration: none !important;
+    padding: 0.35rem 0.5rem;
+  }
+  .pagination__nav:hover:not(.pagination__nav--disabled) {
+    text-decoration: underline !important;
+    color: #7a7a7a !important;
+  }
+  .pagination__nav--disabled {
+    opacity: 0.35;
+    color: #888 !important;
+    cursor: default;
+  }
+  .pagination__pages {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .pagination__pages li {
+    margin: 0;
+  }
+  .pagination__num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.25rem;
+    height: 2.25rem;
+    padding: 0 0.4rem;
+    background: #0582ca;
+    color: #fff !important;
+    text-decoration: none !important;
+    font-family: Oswald, "Noto Sans Tamil", sans-serif;
+    font-weight: 500;
+    font-size: 0.9rem;
+    border-radius: 2px;
+  }
+  .pagination__num:hover {
+    background: #7a7a7a;
+    color: #fff !important;
+  }
+  .pagination__current {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.25rem;
+    height: 2.25rem;
+    padding: 0 0.4rem;
+    background: #252422;
+    color: #fff;
+    font-family: Oswald, "Noto Sans Tamil", sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border-radius: 2px;
+  }
+</style>

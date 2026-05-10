@@ -1,0 +1,53 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import ArticleFeed from "../../components/ArticleFeed.astro";
+import Pagination from "../../components/Pagination.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import articles from "../../data/articles.json";
+import type { Article } from "../../types/article";
+import { sortArticlesDesc, sliceForPage, getTotalPages } from "../../lib/pagination";
+
+export function getStaticPaths() {
+  const sorted = sortArticlesDesc(articles as Article[]);
+  const total = getTotalPages(sorted.length);
+  if (total <= 1) return [];
+  return Array.from({ length: total - 1 }, (_, i) => ({
+    params: { page: String(i + 2) },
+  }));
+}
+
+const sorted = sortArticlesDesc(articles as Article[]);
+const totalPages = getTotalPages(sorted.length);
+const pageNum = Number(Astro.params.page);
+
+const valid = Number.isInteger(pageNum) && pageNum >= 2 && pageNum <= totalPages;
+const pageArticles = valid ? sliceForPage(sorted, pageNum) : [];
+const base = import.meta.env.BASE_URL;
+---
+
+<Layout
+  title={valid ? `Tripitakatamil — பக்கம் ${pageNum}` : "Tripitakatamil"}
+  description={`Tripitakatamil — அண்மைப் படைப்புகள் (பக்கம் ${pageNum})`}
+>
+  {
+    valid ? (
+      <>
+        <Breadcrumbs
+          items={[
+            { label: "முகப்பு", href: base },
+            { label: `பக்கம் ${pageNum}` },
+          ]}
+        />
+        <ArticleFeed
+          articles={pageArticles}
+          heading="அண்மைப் படைப்புகள்"
+          subheading={`பக்கம் ${pageNum} / ${totalPages} — முந்தைய/அடுத்து பக்கங்களுக்குக் கீழுள்ள இணைப்புகளைப் பயன்படுத்தவும்.`}
+          showFeedNote={false}
+        />
+        <Pagination currentPage={pageNum} totalPages={totalPages} />
+      </>
+    ) : (
+      <p>இப் பக்கம் கிடைக்கவில்லை.</p>
+    )
+  }
+</Layout>

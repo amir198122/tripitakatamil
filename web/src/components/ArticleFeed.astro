@@ -8,9 +8,11 @@ interface Props {
   articles: Article[];
   heading: string;
   subheading?: string;
+  /** Show legal/sample note under the list (default true). */
+  showFeedNote?: boolean;
 }
 
-const { articles, heading, subheading } = Astro.props;
+const { articles, heading, subheading, showFeedNote = true } = Astro.props;
 
 function formatDate(iso: string) {
   try {
@@ -49,10 +51,14 @@ function formatDate(iso: string) {
       ))
     }
   </ul>
-  <p class="feed-note">
-    இத் தலைப்புகள் <strong>Tripitakatamil</strong> க்கான மாதிரி உள்ளடக்கம் மட்டுமே. வேறு தளங்களின்
-    உரைகளை நகலெடுக்காமல், உங்கள் சொந்தக் கட்டுரைகளால் மாற்றவும்.
-  </p>
+  {
+    showFeedNote && (
+      <p class="feed-note">
+        இத் தலைப்புகள் <strong>Tripitakatamil</strong> க்கான மாதிரி உள்ளடக்கம் மட்டுமே. வேறு தளங்களின்
+        உரைகளை நகலெடுக்காமல், உங்கள் சொந்தக் கட்டுரைகளால் மாற்றவும்.
+      </p>
+    )
+  }
 </section>
 
 <style>

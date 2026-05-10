@@ -2,11 +2,16 @@
 import Layout from "../layouts/Layout.astro";
 import YouTube from "../components/YouTube.astro";
 import ArticleFeed from "../components/ArticleFeed.astro";
+import Pagination from "../components/Pagination.astro";
 import featured from "../data/featured-video.json";
 import articles from "../data/articles.json";
 import type { Article } from "../types/article";
+import { sortArticlesDesc, sliceForPage, getTotalPages } from "../lib/pagination";
 
 const list = articles as Article[];
+const sorted = sortArticlesDesc(list);
+const pageArticles = sliceForPage(sorted, 1);
+const totalPages = getTotalPages(sorted.length);
 ---
 
 <Layout
@@ -22,10 +27,16 @@ const list = articles as Article[];
   </header>
 
   <ArticleFeed
-    articles={list}
+    articles={pageArticles}
     heading="அண்மைப் படைப்புகள்"
-    subheading="Latest — edit `web/src/data/articles.json` or add Markdown posts later."
+    subheading={
+      totalPages > 1
+        ? `பக்கம் 1 / ${totalPages} — மேலும் பதிவுகளுக்கு கீழே உள்ள பக்க இணைப்புகளைப் பயன்படுத்தவும்.`
+        : "Latest — edit `web/src/data/articles.json` or add Markdown posts later."
+    }
   />
+
+  <Pagination currentPage={1} totalPages={totalPages} />
 
   <section class="video-block" aria-labelledby="feat-heading">
     <h2 id="feat-heading" class="section-title">{featured.title}</h2>

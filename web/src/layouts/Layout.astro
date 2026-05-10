@@ -1,6 +1,8 @@
 ---
 import articles from "../data/articles.json";
 import type { Article } from "../types/article";
+import SiteNav from "../components/SiteNav.astro";
+import { getTotalPages } from "../lib/pagination";
 
 interface Props {
   title: string;
@@ -14,15 +16,8 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 const base = import.meta.env.BASE_URL;
 
 const list = articles as Article[];
-const seen = new Set<string>();
-const categoryLinks: { label: string; slug: string }[] = [];
-for (const a of list) {
-  if (!seen.has(a.category)) {
-    seen.add(a.category);
-    categoryLinks.push({ label: a.category, slug: a.slug });
-  }
-}
 const sidebarLinks = list.slice(0, 8);
+const totalPages = getTotalPages(list.length);
 ---
 
 <!doctype html>
@@ -51,16 +46,9 @@ const sidebarLinks = list.slice(0, 8);
             <a class="logo-title" href={`${base}`}>Tripitakatamil</a>
             <p class="site-slogan">தமிழ் இதழ் · Tamil publication</p>
           </div>
-          <nav class="hornav" aria-label="Primary">
-            <a href={`${base}`}>முகப்பு</a>
-            <a href={`${base}#feed-title`}>அண்மை</a>
-            <a href={`${base}about/`}>About</a>
-            {
-              categoryLinks.map((c) => (
-                <a href={`${base}#${c.slug}`}>{c.label}</a>
-              ))
-            }
-          </nav>
+          <div class="header-nav-cluster">
+            <SiteNav />
+          </div>
         </div>
       </header>
 
@@ -94,6 +82,11 @@ const sidebarLinks = list.slice(0, 8);
                   <li>
                     <a href={`${base}#feat-heading`}>காணொளி</a>
                   </li>
+                  {totalPages > 1 ? (
+                    <li>
+                      <a href={`${base}page/2/`}>பக்கங்கள் 2+</a>
+                    </li>
+                  ) : null}
                   <li>
                     <a href={`${base}about/`}>About</a>
                   </li>
@@ -228,6 +221,15 @@ const sidebarLinks = list.slice(0, 8);
     justify-content: space-between;
     gap: 1rem 1.5rem;
   }
+  .header-nav-cluster {
+    margin-left: auto;
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    min-width: 0;
+  }
+
   .logo-block {
     min-width: 0;
   }
@@ -250,24 +252,6 @@ const sidebarLinks = list.slice(0, 8);
     font-size: 0.72rem;
     letter-spacing: 0.04em;
     opacity: 0.95;
-  }
-
-  .hornav {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.35rem 1rem;
-    font-family: Oswald, "Noto Sans Tamil", sans-serif;
-    font-size: 0.95rem;
-    font-weight: 500;
-  }
-  .hornav a {
-    color: var(--kt-nav);
-    text-decoration: none;
-    white-space: nowrap;
-  }
-  .hornav a:hover {
-    color: var(--kt-primary);
   }
 
   /* Yellow showcase + search */
@@ -396,12 +380,13 @@ const sidebarLinks = list.slice(0, 8);
     .content-main {
       order: 1;
     }
-    .hornav {
-      max-width: 100%;
-      overflow-x: auto;
+    .header-inner {
       flex-wrap: nowrap;
-      padding-bottom: 0.25rem;
-      -webkit-overflow-scrolling: touch;
+      align-items: center;
+    }
+    .logo-block {
+      min-width: 0;
+      flex: 1;
     }
   }
 
