@@ -5,9 +5,11 @@ import type { Article } from "../types/article";
 interface Props {
   title: string;
   description?: string;
+  /** Full-width main column (no left sidebar) — use for About, legal, etc. */
+  noSidebar?: boolean;
 }
 
-const { title, description = "Tripitakatamil — தமிழ் இதழ் · Tamil publication." } = Astro.props;
+const { title, description = "Tripitakatamil — தமிழ் இதழ் · Tamil publication.", noSidebar = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const base = import.meta.env.BASE_URL;
 
@@ -20,6 +22,7 @@ for (const a of list) {
     categoryLinks.push({ label: a.category, slug: a.slug });
   }
 }
+const sidebarLinks = list.slice(0, 8);
 ---
 
 <!doctype html>
@@ -28,74 +31,156 @@ for (const a of list) {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#c5de6a" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical.toString()} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;600;700&family=Noto+Sans:ital,wght@0,400;0,600;1,400&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;600;700&family=Open+Sans:ital,wght@0,400;0,600;0,700;1,400&family=Oswald:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
-    <header class="site-header">
-      <div class="inner">
-        <a class="brand" href={`${base}`}>Tripitakatamil</a>
-        <nav class="nav" aria-label="Primary">
-          <a href={`${base}`}>முகப்பு</a>
-          <a href={`${base}#feed-title`}>அண்மை</a>
-          <a href={`${base}about/`}>About</a>
-        </nav>
-      </div>
-    </header>
-    <div class="category-bar" role="navigation" aria-label="Topics">
-      <div class="inner category-bar-inner">
-        <span class="category-label">தலைப்புகள்</span>
-        <a href={`${base}#feed-title`}>அனைத்தும்</a>
+    <div id="body_panel" class="body-panel">
+      <header class="site-header header-sticky">
+        <div class="header-inner">
+          <div class="logo-block">
+            <a class="logo-title" href={`${base}`}>Tripitakatamil</a>
+            <p class="site-slogan">தமிழ் இதழ் · Tamil publication</p>
+          </div>
+          <nav class="hornav" aria-label="Primary">
+            <a href={`${base}`}>முகப்பு</a>
+            <a href={`${base}#feed-title`}>அண்மை</a>
+            <a href={`${base}about/`}>About</a>
+            {
+              categoryLinks.map((c) => (
+                <a href={`${base}#${c.slug}`}>{c.label}</a>
+              ))
+            }
+          </nav>
+        </div>
+      </header>
+
+      <section class="showcase-bar" aria-label="Search">
+        <div class="showcase-inner">
+          <span class="search-label">கீற்றில் தேட…</span>
+          <form class="search-form" role="search" action={`${base}`} method="get">
+            <input type="search" name="q" class="search-input" placeholder="தேடல் (உருவாக்கத்தில்)" autocomplete="off" />
+            <button type="button" class="search-btn" disabled title="Static site — wire to search later">தேடு</button>
+          </form>
+        </div>
+      </section>
+
+      <div class:list={["page-shell", noSidebar && "page-shell--full"]}>
         {
-          categoryLinks.map((c) => (
-            <a href={`${base}#${c.slug}`}>{c.label}</a>
-          ))
+          !noSidebar && (
+            <aside class="sidecol-a" aria-label="Sidebar">
+              <div class="module">
+                <h4 class="module-title">பிரபலமானவை</h4>
+                <ul class="module-list">
+                  {sidebarLinks.map((a) => (
+                    <li>
+                      <a href={`${base}#${a.slug}`}>{a.title}</a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div class="module">
+                <h4 class="module-title">இணைப்புகள்</h4>
+                <ul class="module-list">
+                  <li>
+                    <a href={`${base}#feat-heading`}>காணொளி</a>
+                  </li>
+                  <li>
+                    <a href={`${base}about/`}>About</a>
+                  </li>
+                </ul>
+              </div>
+            </aside>
+          )
         }
+        <main id="main" class:list={["content-main", noSidebar && "content-main--solo"]}>
+          <slot />
+        </main>
       </div>
+
+      <footer class="site-footer">
+        <div class="footer-inner">
+          <div class="footer-col">
+            <h4 class="footer-heading">Tripitakatamil</h4>
+            <p class="footer-text">
+              சுயாதீன தமிழ் இதழ். வடிவமைப்பு பொதுவான இதழ் வலைத்தள முறைகளைப் பின்பற்றுகிறது; உள்ளடக்கமும் சொந்தமுமானது.
+            </p>
+          </div>
+          <div class="footer-col">
+            <h4 class="footer-heading">விரைவு இணைப்புகள்</h4>
+            <ul class="footer-links">
+              <li><a href={`${base}`}>முகப்பு</a></li>
+              <li><a href={`${base}#feed-title`}>அண்மைப் படைப்புகள்</a></li>
+              <li><a href={`${base}about/`}>About</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4 class="footer-heading">தொடர்பு</h4>
+            <p class="footer-text">RSS / செய்தி மின்னஞ்சல் — பின்னர் சேர்க்கவும்.</p>
+          </div>
+        </div>
+        <p class="footer-copy">© Tripitakatamil</p>
+      </footer>
     </div>
-    <main id="main" class="main">
-      <slot />
-    </main>
-    <footer class="site-footer">
-      <div class="inner">
-        <p>© Tripitakatamil — தமிழ் இதழ்</p>
-      </div>
-    </footer>
   </body>
 </html>
 
 <style is:global>
   :root {
-    --bg: #f8fafc;
-    --fg: #0f172a;
-    --muted: #64748b;
-    --primary: #1e3a8a;
-    --accent: #1e3a8a;
-    --max: 52rem;
+    --kt-primary: #0582ca;
+    --kt-primary-hover: #7a7a7a;
+    /* Aliases for components that still reference --primary / --muted */
+    --primary: #0582ca;
+    --muted: #5a5a5a;
+    --accent: #0582ca;
+    --fg: #000000;
+    --kt-header: #c5de6a;
+    --kt-showcase: #ffd754;
+    --kt-page-bg: #ebebeb;
+    --kt-content-bg: #ffffff;
+    --kt-footer-bg: #000000;
+    --kt-text: #000000;
+    --kt-h2: #252422;
+    --kt-h3: #111111;
+    --kt-h4: #005e94;
+    --kt-nav: #0a1a0f;
+    --kt-max: 1200px;
+    --kt-side: 15%;
   }
+
   * {
     box-sizing: border-box;
   }
+
   html {
-    font-family: "Noto Sans Tamil", "Noto Sans", system-ui, sans-serif;
-    background: var(--bg);
-    color: var(--fg);
+    font-family: "Noto Sans Tamil", "Open Sans", system-ui, sans-serif;
+    font-size: 15px;
+    background: var(--kt-page-bg);
+    color: var(--kt-text);
     line-height: 1.65;
   }
+
   body {
     margin: 0;
     min-height: 100vh;
+  }
+
+  .body-panel {
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
+    background: var(--kt-page-bg);
   }
+
   .skip {
     position: absolute;
     left: -9999px;
@@ -112,99 +197,307 @@ for (const a of list) {
     height: auto;
     padding: 0.5rem 1rem;
     background: #fff;
-    border: 2px solid var(--primary);
+    border: 2px solid var(--kt-primary);
     z-index: 100;
   }
+
+  a {
+    color: var(--kt-primary);
+  }
+  a:hover {
+    color: var(--kt-primary-hover);
+  }
+
+  /* Header (lime band) */
   .site-header {
-    border-bottom: 1px solid #e2e8f0;
-    background: #fff;
+    background-color: var(--kt-header);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
   }
-  .category-bar {
-    background: #1e3a8a;
-    color: #e2e8f0;
-    font-size: 0.88rem;
+  .header-sticky {
+    position: sticky;
+    top: 0;
+    z-index: 40;
   }
-  .category-bar-inner {
+  .header-inner {
+    max-width: var(--kt-max);
+    margin: 0 auto;
+    padding: 0.85rem clamp(1rem, 3vw, 1.5rem);
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
-    gap: 0.75rem 1.25rem;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-  }
-  .category-label {
-    font-weight: 600;
-    color: #fff;
-    margin-right: 0.25rem;
-  }
-  .category-bar a {
-    color: #cbd5e1;
-    text-decoration: none;
-  }
-  .category-bar a:hover {
-    color: #fff;
-    text-decoration: underline;
-  }
-  .site-header .inner,
-  .site-footer .inner,
-  .main {
-    max-width: var(--max);
-    margin: 0 auto;
-    padding: 1rem clamp(1rem, 4vw, 1.5rem);
-  }
-  .site-header .inner {
-    display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1rem;
-    flex-wrap: wrap;
+    gap: 1rem 1.5rem;
   }
-  .brand {
-    font-weight: 700;
-    font-size: 1.15rem;
-    color: var(--fg);
+  .logo-block {
+    min-width: 0;
+  }
+  .logo-title {
+    font-family: Oswald, "Noto Sans Tamil", sans-serif;
+    font-size: clamp(2rem, 6vw, 3rem);
+    font-weight: 600;
+    color: #fff;
     text-decoration: none;
+    line-height: 1.05;
+    letter-spacing: 0.02em;
   }
-  .brand:hover {
-    color: var(--primary);
+  .logo-title:hover {
+    color: #fff;
+    opacity: 0.92;
   }
-  .nav {
+  .site-slogan {
+    margin: 0.15rem 0 0;
+    color: #fff;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    opacity: 0.95;
+  }
+
+  .hornav {
     display: flex;
-    gap: 1.25rem;
     flex-wrap: wrap;
-  }
-  .nav a {
-    color: var(--muted);
-    text-decoration: none;
+    align-items: center;
+    gap: 0.35rem 1rem;
+    font-family: Oswald, "Noto Sans Tamil", sans-serif;
     font-size: 0.95rem;
+    font-weight: 500;
   }
-  .nav a:hover {
-    color: var(--primary);
+  .hornav a {
+    color: var(--kt-nav);
+    text-decoration: none;
+    white-space: nowrap;
   }
-  .main {
+  .hornav a:hover {
+    color: var(--kt-primary);
+  }
+
+  /* Yellow showcase + search */
+  .showcase-bar {
+    background-color: var(--kt-showcase);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  }
+  .showcase-inner {
+    max-width: var(--kt-max);
+    margin: 0 auto;
+    padding: 0.65rem clamp(1rem, 3vw, 1.5rem);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1rem;
+  }
+  .search-label {
+    font-weight: 600;
+    color: var(--kt-h2);
+    font-family: Oswald, "Noto Sans Tamil", sans-serif;
+  }
+  .search-form {
+    display: flex;
     flex: 1;
-    width: 100%;
+    min-width: 200px;
+    max-width: 28rem;
+    gap: 0;
   }
-  .site-footer {
-    border-top: 1px solid #e2e8f0;
-    margin-top: auto;
+  .search-input {
+    flex: 1;
+    border: 1px solid #ccc;
+    padding: 0.45rem 0.65rem;
+    font: inherit;
     background: #fff;
-    font-size: 0.9rem;
-    color: var(--muted);
   }
-  .site-footer p {
+  .search-btn {
+    background: var(--kt-primary);
+    color: #fff;
+    border: 1px solid var(--kt-primary);
+    padding: 0.45rem 1rem;
+    font-family: Oswald, "Noto Sans Tamil", sans-serif;
+    font-weight: 600;
+    cursor: not-allowed;
+    opacity: 0.85;
+  }
+
+  /* White content shell + sidebar */
+  .page-shell {
+    max-width: var(--kt-max);
+    margin: 0 auto;
+    width: 100%;
+    flex: 1;
+    display: flex;
+    align-items: stretch;
+    background: var(--kt-content-bg);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04);
+  }
+  .page-shell--full .content-main--solo {
+    max-width: 42rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .sidecol-a {
+    width: var(--kt-side);
+    min-width: 11.5rem;
+    max-width: 220px;
+    flex-shrink: 0;
+    padding: 1.25rem 0.85rem 1.5rem 1rem;
+    border-right: 1px solid #e8e8e8;
+    background: #fafafa;
+  }
+  .module {
+    margin-bottom: 1.5rem;
+  }
+  .module-title {
+    margin: 0 0 0.65rem;
+    font-family: "Open Sans", "Noto Sans Tamil", sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--kt-h4);
+    border-bottom: 2px solid var(--kt-primary);
+    padding-bottom: 0.35rem;
+  }
+  .module-list {
     margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.88rem;
+    line-height: 1.45;
   }
+  .module-list li {
+    margin-bottom: 0.45rem;
+  }
+  .module-list a {
+    color: var(--kt-text);
+    text-decoration: none;
+  }
+  .module-list a:hover {
+    color: var(--kt-primary);
+    text-decoration: underline;
+  }
+
+  .content-main {
+    flex: 1;
+    min-width: 0;
+    padding: 1.25rem clamp(1rem, 3vw, 1.75rem) 2rem;
+  }
+  .content-main--solo {
+    padding: 1.5rem clamp(1rem, 3vw, 2rem) 2.5rem;
+    max-width: 42rem;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 767px) {
+    .page-shell {
+      flex-direction: column;
+    }
+    .sidecol-a {
+      width: 100%;
+      max-width: none;
+      border-right: 0;
+      border-bottom: 1px solid #e8e8e8;
+      order: 2;
+    }
+    .content-main {
+      order: 1;
+    }
+    .hornav {
+      max-width: 100%;
+      overflow-x: auto;
+      flex-wrap: nowrap;
+      padding-bottom: 0.25rem;
+      -webkit-overflow-scrolling: touch;
+    }
+  }
+
+  /* Footer (black bar) */
+  .site-footer {
+    background-color: var(--kt-footer-bg);
+    color: #e5e5e5;
+    margin-top: auto;
+    padding: 2rem 1rem 1rem;
+    font-size: 0.9rem;
+  }
+  .site-footer a {
+    color: #93c5fd;
+  }
+  .site-footer a:hover {
+    color: #fff;
+  }
+  .footer-inner {
+    max-width: var(--kt-max);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem 2rem;
+  }
+  @media (max-width: 700px) {
+    .footer-inner {
+      grid-template-columns: 1fr;
+    }
+  }
+  .footer-heading {
+    margin: 0 0 0.65rem;
+    font-family: Oswald, "Noto Sans Tamil", sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+  }
+  .footer-text {
+    margin: 0;
+    color: #b4b4b4;
+    line-height: 1.55;
+  }
+  .footer-links {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .footer-links li {
+    margin-bottom: 0.4rem;
+  }
+  .footer-copy {
+    max-width: var(--kt-max);
+    margin: 1.5rem auto 0;
+    padding-top: 1rem;
+    border-top: 1px solid #333;
+    text-align: center;
+    color: #888;
+    font-size: 0.82rem;
+  }
+
+  /* Global heading rhythm (Keetru-like) */
   h1 {
-    font-size: clamp(1.75rem, 4vw, 2.1rem);
+    font-family: Oswald, "Noto Sans Tamil", sans-serif;
+    font-size: clamp(1.65rem, 3.5vw, 2rem);
+    font-weight: 600;
+    color: var(--kt-h2);
     line-height: 1.25;
     margin: 0 0 0.75rem;
   }
+  h2,
+  h2 a:link,
+  h2 a:visited {
+    font-family: Oswald, "Noto Sans Tamil", sans-serif;
+    color: var(--kt-h2);
+  }
+  h3,
+  .module h3 {
+    font-family: Oswald, "Noto Sans Tamil", sans-serif;
+    color: var(--kt-h3);
+    font-weight: 600;
+  }
+  h4 {
+    font-family: "Open Sans", "Noto Sans Tamil", sans-serif;
+    color: var(--kt-h4);
+  }
+
   .lede {
-    color: var(--muted);
+    color: #444;
     margin: 0 0 1.5rem;
   }
   .caption :global(strong) {
-    color: var(--fg);
+    color: var(--kt-text);
+  }
+
+  hr {
+    border: 0;
+    border-top: 1px solid var(--kt-primary);
+    margin: 1.5rem 0;
   }
 </style>

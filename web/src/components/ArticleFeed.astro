@@ -1,7 +1,6 @@
 ---
 /**
- * Magazine-style “latest posts” list: date, category, title, excerpt.
- * Content from articles.json — replace with Markdown collection or CMS later.
+ * Homepage “latest posts” list — layout aligned with common Tamil magazine / Joomla blog patterns.
  */
 import type { Article } from "../types/article";
 
@@ -58,23 +57,25 @@ function formatDate(iso: string) {
 
 <style>
   .feed {
-    margin: 2rem 0 2.5rem;
+    margin: 0 0 2rem;
   }
   .feed-head {
-    border-bottom: 2px solid var(--accent, #1e3a8a);
+    border-bottom: 2px solid #0582ca;
     padding-bottom: 0.5rem;
-    margin-bottom: 1.25rem;
+    margin-bottom: 1.1rem;
   }
   .feed-title {
     margin: 0;
-    font-size: clamp(1.35rem, 3vw, 1.65rem);
-    font-weight: 700;
-    letter-spacing: -0.02em;
+    font-family: Oswald, "Noto Sans Tamil", sans-serif;
+    font-size: clamp(1.35rem, 3vw, 1.75rem);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: #252422;
   }
   .feed-sub {
     margin: 0.35rem 0 0;
-    color: var(--muted, #64748b);
-    font-size: 0.95rem;
+    color: #5a5a5a;
+    font-size: 0.92rem;
   }
   .feed-list {
     list-style: none;
@@ -83,48 +84,49 @@ function formatDate(iso: string) {
   }
   .feed-item {
     margin: 0;
-    padding: 1.15rem 0;
-    border-bottom: 1px solid #e2e8f0;
+    padding: 1rem 0;
+    border-bottom: 1px solid #e5e5e5;
   }
   .feed-item:last-child {
     border-bottom: 0;
   }
   .meta {
-    margin: 0 0 0.35rem;
-    font-size: 0.875rem;
-    color: var(--muted, #64748b);
+    margin: 0 0 0.3rem;
+    font-size: 0.85rem;
+    color: #5a5a5a;
   }
   .sep {
     margin: 0 0.35rem;
   }
   .cat {
-    color: var(--primary, #1e3a8a);
+    color: #005e94;
     font-weight: 600;
   }
   .item-title {
-    margin: 0 0 0.5rem;
-    font-size: 1.125rem;
+    margin: 0 0 0.45rem;
+    font-family: Oswald, "Noto Sans Tamil", sans-serif;
+    font-size: 1.08rem;
     line-height: 1.35;
-    font-weight: 700;
+    font-weight: 600;
   }
   .item-title a {
-    color: var(--fg, #0f172a);
+    color: #0582ca;
     text-decoration: none;
   }
   .item-title a:hover {
-    color: var(--primary, #1e3a8a);
+    color: #7a7a7a;
     text-decoration: underline;
   }
   .excerpt {
     margin: 0;
-    color: #334155;
+    color: #333;
     font-size: 0.98rem;
     line-height: 1.6;
   }
   .feed-note {
-    margin: 1.5rem 0 0;
-    font-size: 0.85rem;
-    color: var(--muted, #64748b);
+    margin: 1.25rem 0 0;
+    font-size: 0.82rem;
+    color: #666;
     line-height: 1.5;
   }
 </style>
