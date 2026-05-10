@@ -2,16 +2,25 @@
 
 This repo builds the **Astro** site in [`web/`](../web/) and deploys the `dist/` output to **GitHub Pages** whenever you push to **`main`**.
 
-## One-time GitHub setup
+## One-time GitHub setup (required — deploy fails without this)
 
 1. Open the repo on GitHub → **Settings** → **Pages**.
 2. Under **Build and deployment** → **Source**, choose **GitHub Actions** (not “Deploy from a branch”).
-3. Save. The first push to `main` after adding [`.github/workflows/deploy-pages.yml`](../.github/workflows/deploy-pages.yml) will run the workflow.
-4. When the workflow finishes, Pages shows a URL like:
+3. Save, then re-run the workflow (**Actions** → failed run → **Re-run all jobs**) or push an empty commit.
 
-   `https://amir198122.github.io/tripitakatamil/`
+If **Source** is left on “Deploy from a branch”, the **Deploy to GitHub Pages** step fails because GitHub is not expecting an Actions-produced artifact.
 
-   (Project site = `https://<user>.github.io/<repo>/` — matches [`web/astro.config.mjs`](../web/astro.config.mjs) `site` + `base`.)
+### First run: `github-pages` environment
+
+The workflow uses the **`github-pages`** environment. If GitHub shows a **pending approval** for that environment, open the run in the Actions tab and **approve** it once.
+
+### After the first successful deploy
+
+When the workflow finishes green, **Settings → Pages** shows the live URL, typically:
+
+`https://amir198122.github.io/tripitakatamil/`
+
+(Project site = `https://<user>.github.io/<repo>/` — matches [`web/astro.config.mjs`](../web/astro.config.mjs) `site` + `base`.)
 
 ## Automatic deploys
 
@@ -31,5 +40,6 @@ Edit [`web/src/data/featured-video.json`](../web/src/data/featured-video.json), 
 ## Troubleshooting
 
 - **Workflow not listed:** ensure YAML is under `.github/workflows/` on the default branch.
+- **Deploy step fails while build is green:** almost always **Pages → Source** is not set to **GitHub Actions** (see top of this doc). Rarely: org policy blocks `GITHUB_TOKEN` **pages** scope — check **Settings → Actions → General → Workflow permissions**.
 - **403 / Pages write:** re-check **Settings → Actions → General** → *Workflow permissions* → “Read and write” if your org policy blocks uploads.
 - **Blank CSS or broken links locally:** run `npm run dev` from `web/` — dev server uses the same `base` as production.
