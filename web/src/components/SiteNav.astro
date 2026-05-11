@@ -8,20 +8,7 @@ const items = navData as NavItem[];
 ---
 
 <div class="site-nav-wrap">
-  <button
-    type="button"
-    class="site-nav-burger"
-    id="site-nav-burger"
-    aria-expanded="false"
-    aria-controls="site-nav-drawer"
-    aria-label="மெனுவைத் திற"
-  >
-    <span class="site-nav-burger__bar" aria-hidden="true"></span>
-    <span class="site-nav-burger__bar" aria-hidden="true"></span>
-    <span class="site-nav-burger__bar" aria-hidden="true"></span>
-  </button>
-
-  <nav class="site-nav site-nav--desktop" aria-label="Primary" data-site-nav-desktop>
+  <nav class="site-nav" aria-label="Primary">
     <ul class="site-nav__root">
       {
         items.map((item) => (
@@ -60,85 +47,10 @@ const items = navData as NavItem[];
       }
     </ul>
   </nav>
-
-  <div class="site-nav-backdrop" id="site-nav-backdrop" hidden data-nav-backdrop></div>
-  <div class="site-nav-drawer" id="site-nav-drawer" hidden data-nav-drawer>
-    <div class="site-nav-drawer__head">
-      <span class="site-nav-drawer__title">பிரிவுகள்</span>
-      <button type="button" class="site-nav-drawer__close" id="site-nav-close" aria-label="மூடு">
-        ×
-      </button>
-    </div>
-    <nav aria-label="Mobile primary">
-      <ul class="site-nav-mobile">
-        {
-          items.map((item) => (
-            <li class="site-nav-mobile__item">
-              {item.children?.length ? (
-                <details class="site-nav-mobile__details">
-                  <summary class="site-nav-mobile__summary">
-                    <span>{item.label}</span>
-                    <span class="site-nav-mobile__chev" aria-hidden="true"></span>
-                  </summary>
-                  <ul class="site-nav-mobile__sub">
-                    <li>
-                      <a href={withBase(base, item.path)}>பிரிவு முகப்பு</a>
-                    </li>
-                    {item.children.map((ch) => (
-                      <li>
-                        <a href={withBase(base, ch.path)}>{ch.label}</a>
-                      </li>
-                    ))}
-                  </ul>
-                </details>
-              ) : (
-                <a class="site-nav-mobile__solo" href={withBase(base, item.path)}>
-                  {item.label}
-                </a>
-              )}
-            </li>
-          ))
-        }
-      </ul>
-    </nav>
-  </div>
 </div>
 
 <script>
   (function () {
-    const burger = document.getElementById("site-nav-burger");
-    const drawer = document.querySelector("[data-nav-drawer]");
-    const backdrop = document.querySelector("[data-nav-backdrop]");
-    const closeBtn = document.getElementById("site-nav-close");
-    if (!burger || !drawer || !backdrop) return;
-
-    function openDrawer() {
-      drawer.hidden = false;
-      backdrop.hidden = false;
-      burger.setAttribute("aria-expanded", "true");
-      document.body.classList.add("site-nav-drawer-open");
-    }
-    function closeDrawer() {
-      drawer.hidden = true;
-      backdrop.hidden = true;
-      burger.setAttribute("aria-expanded", "false");
-      document.body.classList.remove("site-nav-drawer-open");
-    }
-
-    burger.addEventListener("click", () => {
-      if (drawer.hidden) openDrawer();
-      else closeDrawer();
-    });
-    backdrop.addEventListener("click", closeDrawer);
-    closeBtn?.addEventListener("click", closeDrawer);
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") closeDrawer();
-    });
-
-    document.querySelectorAll("[data-nav-drawer] a").forEach((a) => {
-      a.addEventListener("click", () => closeDrawer());
-    });
-
     document.querySelectorAll("[data-nav-caret]").forEach((btn) => {
       btn.addEventListener("click", (e) => {
         e.preventDefault();
@@ -166,38 +78,14 @@ const items = navData as NavItem[];
   .site-nav-wrap {
     display: flex;
     align-items: stretch;
-    justify-content: flex-end;
-    gap: 0.5rem;
+    justify-content: flex-start;
     width: 100%;
     min-width: 0;
     flex: 1;
     overflow: visible;
   }
 
-  .site-nav-burger {
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    align-self: center;
-    gap: 5px;
-    width: 2.75rem;
-    height: 2.75rem;
-    margin: 0.35rem 0.5rem 0.35rem 0.35rem;
-    padding: 0.5rem;
-    border: 1px solid #c4c4c4;
-    background: #f3f3f3;
-    border-radius: 3px;
-    cursor: pointer;
-    flex-shrink: 0;
-  }
-  .site-nav-burger__bar {
-    display: block;
-    height: 2px;
-    background: #1a1a1a;
-    border-radius: 1px;
-  }
-
-  .site-nav--desktop {
+  .site-nav {
     flex: 1;
     min-width: 0;
     font-family: "Noto Sans Tamil", "Open Sans", sans-serif;
@@ -232,7 +120,6 @@ const items = navData as NavItem[];
     margin: 0;
   }
 
-  /** Keeps hover while moving pointer from tab into the panel (no 1px “dead air”). */
   .site-nav__tier1--has-sub::after {
     content: "";
     position: absolute;
@@ -347,127 +234,5 @@ const items = navData as NavItem[];
     visibility: visible;
     pointer-events: auto;
     transform: translateY(0);
-  }
-
-  .site-nav-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.45);
-    z-index: 80;
-  }
-  .site-nav-drawer {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: min(20rem, 92vw);
-    height: 100vh;
-    background: #fff;
-    z-index: 90;
-    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    scrollbar-width: thin;
-    scrollbar-color: #c4c4c4 transparent;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .site-nav-drawer::-webkit-scrollbar {
-    width: 6px;
-  }
-  .site-nav-drawer::-webkit-scrollbar-thumb {
-    background: #c4c4c4;
-    border-radius: 4px;
-  }
-  .site-nav-drawer::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  .site-nav-drawer__head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid #e5e5e5;
-    background: #fafafa;
-  }
-  .site-nav-drawer__title {
-    font-family: Oswald, "Noto Sans Tamil", sans-serif;
-    font-weight: 600;
-    color: #252422;
-  }
-  .site-nav-drawer__close {
-    border: 0;
-    background: transparent;
-    font-size: 1.75rem;
-    line-height: 1;
-    cursor: pointer;
-    color: #333;
-    padding: 0.25rem;
-  }
-
-  .site-nav-mobile {
-    list-style: none;
-    margin: 0;
-    padding: 0.5rem 0 2rem;
-  }
-  .site-nav-mobile__item {
-    border-bottom: 1px solid #eee;
-  }
-  .site-nav-mobile__solo {
-    display: block;
-    padding: 0.85rem 1rem;
-    color: #0582ca !important;
-    text-decoration: none !important;
-    font-weight: 600;
-    font-size: 0.95rem;
-  }
-  .site-nav-mobile__details {
-    border: 0;
-  }
-  .site-nav-mobile__summary {
-    list-style: none;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.65rem 1rem;
-    cursor: pointer;
-    font-weight: 600;
-    color: #1a1a1a;
-  }
-  .site-nav-mobile__summary::-webkit-details-marker {
-    display: none;
-  }
-  .site-nav-mobile__chev::before {
-    content: "▾";
-    color: #666;
-    font-size: 0.75rem;
-  }
-  .site-nav-mobile__sub {
-    list-style: none;
-    margin: 0;
-    padding: 0 0 0.5rem 0.5rem;
-    background: #fafafa;
-  }
-  .site-nav-mobile__sub a {
-    display: block;
-    padding: 0.5rem 0.75rem;
-    color: #0582ca !important;
-    text-decoration: none !important;
-    font-size: 0.92rem;
-  }
-
-  @media (max-width: 767px) {
-    .site-nav-burger {
-      display: flex;
-    }
-    .site-nav--desktop {
-      display: none;
-    }
-  }
-</style>
-
-<style is:global>
-  body.site-nav-drawer-open {
-    overflow: hidden;
   }
 </style>
